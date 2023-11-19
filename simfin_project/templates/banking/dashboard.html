@@ -1,30 +1,111 @@
 {% extends 'base.html' %}
 
+{% block title %} | Banking Dashboard {% endblock %}
+
 {% block content %}
 
-<!-- Banking App content -->
-<div class="col-lg-7 col-md-7 col-sm-12 mt-2">
-  <h1>Banking</h1>
-  <hr>
+<!-- Main Section with Sidebar -->
+<div class="container mt-2">
   <div class="row">
-    <div class="col-sm-12 col-md-6"><b>Chequing Balance: </b>$1200</div>
-    <div class="col-sm-12 col-md-6"><b>Saving Balance: </b>$1200</div>
+    <div class="col-lg-3 col-md-3 col-sm-12 border rounded" align="center">
+      <div class="border-bottom p-2">
+        <h1 class="fs-1 text-break" id="day">Day {{ userBankingData.day }}</h1>
+      </div>
+      <div class="border-bottom p-2">
+        <form action="{% url 'changeSimulationState' %}" method="POST" id="simulationState">
+          {% csrf_token %}
+          <input type="hidden">
+        </form>
+        {% if userBankingData.to_simulate_next %}
+        <a href="javascript:{document.getElementById('simulationState').submit()}" class="btn btn-danger fs-1 text-break">
+          <i class="fas fa-sign-out-alt"></i> Stop Simulation
+      </a>  
+        {% else %}
+        <a href="javascript:{document.getElementById('simulationState').submit()}" class="btn btn-secondary fs-1 text-break">
+          <i class="fas fa-sign-out-alt"></i> Simulatie Time
+      </a>  
+        {% endif %}
+      </div>
+      <div class="border-bottom p-2">
+        <div>
+          <p align="left"><b>Bank Balance: </b>${{totalBalance}}</p>
+        </div>
+        <div>
+          <p align="left"><b>Credit Rating: </b>{{userBankingData.creditRating}}</p>
+        </div>
+        <div>
+          <p align="left"><b>Credit Limit: </b>${{userBankingData.creditLimit}}</p>
+        </div>
+      </div>
+      <div class="border-bottom p-2">
+        <div>
+          <p align="left"><b>Bi-weekly paycheck: </b>${{userData.paycheck}}</p>
+        </div>
+        <div>
+          <p align="left"><b>Rent: </b>${{userData.rent}}</p>
+        </div>
+        <div>
+          <p align="left"><b>Phone Bill: </b>${{userData.phoneBill}}</p>
+        </div>
+      </div>
+    </div>
+    <!-- Banking App content -->
+    <div class="col-lg-7 col-md-7 col-sm-12 mt-2">
+      <h1>Banking</h1>
+      <hr>
+      <div class="row">
+        <div class="col-sm-12 col-md-6"><b>Chequing Balance: </b>${{userBankingData.chequingBalance}}</div>
+        <div class="col-sm-12 col-md-6"><b>Saving Balance: </b>${{userBankingData.savingBalance}}</div>
+      </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-12 border rounded row" align="center">
+      <div>
+        <h1 class="fs-1">Actions</h1>
+        <hr>
+      </div>
+      <div class="m-1"><a href="#" class="col-sm-12 col-md-12 col-lg-12 btn btn-danger">Move Money</a></div>
+      <div class="m-1"><a href="#" class="col-sm-12 col-md-12 col-lg-12 btn btn-danger">Apply to increase
+          Credit
+          Limit</a></div>
+      <div class="m-1"><a href="#" class="col-sm-12 col-md-12 col-lg-12 btn btn-danger">Automate payments</a>
+      </div>
+      <div class="m-1"><a href="#" class="col-sm-12 col-md-12 col-lg-12 btn btn-danger">Ask for a raise</a>
+      </div>
+      <div class="m-1"><a href="#" class="col-sm-12 col-md-12 col-lg-12 btn btn-danger">Set defaults</a></div>
+    </div>
   </div>
 </div>
-<div class="col-lg-2 col-md-2 col-sm-12 border rounded row" align="center">
-  <div>
-    <h1 class="fs-1">Actions</h1>
-    <hr>
-  </div>
-  <div class="m-1"><a href="#" class="col-sm-12 col-md-12 col-lg-12 btn btn-danger">Move Money</a></div>
-  <div class="m-1"><a href="#" class="col-sm-12 col-md-12 col-lg-12 btn btn-danger">Apply to increase
-      Credit
-      Limit</a></div>
-  <div class="m-1"><a href="#" class="col-sm-12 col-md-12 col-lg-12 btn btn-danger">Automate payments</a>
-  </div>
-  <div class="m-1"><a href="#" class="col-sm-12 col-md-12 col-lg-12 btn btn-danger">Ask for a raise</a>
-  </div>
-  <div class="m-1"><a href="#" class="col-sm-12 col-md-12 col-lg-12 btn btn-danger">Set defaults</a></div>
-</div>
+
+<!-- Your existing HTML content -->
+
+{% if userBankingData.to_simulate_next %}
+<script>
+  // Function to update the value in the UI
+  function updateValue(newValue) {
+      $('#day').text(newValue);
+  }
+
+  // Function to periodically fetch the updated value from the server
+  function pollServerForValue() {
+      $.ajax({
+          url: '/getUpdatedData',  // Replace with your actual URL
+          type: 'GET',
+          dataType: 'json',
+          success: function (data) {
+              updateValue("Day ", data.userBankingData.day);
+          },
+          complete: function () {
+              // Schedule the next poll after a delay (e.g., 5 seconds)
+              setTimeout(pollServerForValue, 2000);
+          }
+      });
+  }
+
+  // Start the polling process
+  $(document).ready(function () {
+      pollServerForValue();
+  });
+</script>
+{% endif %}
 
 {% endblock %}

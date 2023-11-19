@@ -2,50 +2,70 @@
 <nav class="navbar navbar-expand-lg bg-danger border-bottom border-body">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">SimFin</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-            aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a 
-                    {% if "/" == request.path %}
+                    {% if "/" == request.path %} 
                         class="nav-link active"
-                    {% else %}
-                        class="nav-link"
-                    {% endif %} 
+                    {% else %} 
+                        class="nav-link" 
+                    {% endif %}
                     aria-current="page" href="{% url 'index' %}">Banking</a>
                 </li>
                 <li class="nav-item">
                     <a 
                     {% if "lifenassets" in request.path %}
-                        class="nav-link active"
-                    {% else %}
-                        class="nav-link"
+                        class="nav-link active" 
+                    {% else %} 
+                        class="nav-link" 
                     {% endif %} 
                     href="#">Life and Assets</a>
                 </li>
                 <li class="nav-item">
                     <a 
                     {% if "history" in request.path %}
-                        class="nav-link active"
-                    {% else %}
+                        class="nav-link active" 
+                    {% else %} 
                         class="nav-link disabled"
                     {% endif %} 
                     aria-disabled="true">Account History</a>
                 </li>
             </ul>
-            <ul class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    Username
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Export Account</a></li>
-                    <li><a class="dropdown-item" href="#">Log Out</a></li>
+            <ul class="navbar-nav mb-2 mb-lg-0">
+                {% if not user.is_authenticated %}
+                <li class="nav-item">
+                    <a {% if "login" in request.path %} class="nav-link active" {% else %} class="nav-link" {% endif %}
+                        aria-disabled="true" href="{% url 'login' %}">Log In</a>
+                </li>
+                <li class="nav-item">
+                    <a {% if "signup" in request.path %} class="nav-link active" {% else %} class="nav-link" {% endif %}
+                        aria-disabled="true" href="{% url 'signup' %}">Sign Up</a>
+                </li>
+                {% else %}
+                <ul class="nav-item dropdown mr-sm-3">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Hello {{user.username}}!
+                    </a>
+                    <ul class="dropdown-menu">
+                        <!-- <li><a class="dropdown-item" href="#">Export Account</a></li> -->
+                        <li>
+                            <a href="javascript:{document.getElementById('logout').submit()}" class="nav-link">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                            <form action="{% url 'logout' %}" method="POST" id="logout">
+                                {% csrf_token %}
+                                <input type="hidden">
+                            </form>
+                        </li>
+                    </ul>
                 </ul>
+                {% endif %}
             </ul>
         </div>
     </div>
