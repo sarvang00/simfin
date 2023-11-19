@@ -1,0 +1,28 @@
+/* Custom styles go here */
+
+body {
+    background-color: #fff; /* White background */
+}
+
+.taskbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+
+.card {
+    border: 1px solid #dc3545; /* Red border */
+}
+
+.card-header {
+    background-color: #dc3545; /* Red background */
+}
+
+.list-group-item {
+    background-color: #dc3545; /* Red background for sidebar items */
+    color: #fff; /* White text color for sidebar items */
+}
+
+.list-group-item:hover {
+    background-color: #c82333; /* Darker red background on hover */
+}
