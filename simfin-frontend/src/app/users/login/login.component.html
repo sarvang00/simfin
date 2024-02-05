@@ -4,19 +4,19 @@
             <h4 class="text-2xl">Login</h4>
         </div>
         <div class="py-6 px-10">
-            <form method="POST">
+            <form [formGroup]="loginForm" (ngSubmit)="submitLoginForm()">
                 <div class="mb-2">
-                    <label for="email" class="block font-bold">Username:</label>
-                    <input type="text" name="email" id="email" placeholder="@email"
+                    <label for="username" class="block font-bold">Username:</label>
+                    <input type="email" name="username" id="username" placeholder="@email" formControlName="username"
                         class="w-full hover:border-black py-2 pl-3 rounded mt-2 outline-none focus:ring-red-600 text-black" />
                 </div>
                 <div>
                     <label for="password" class="block font-bold">Password:</label>
-                    <input type="password" name="password" id="password" placeholder="password"
+                    <input type="password" name="password" id="password" placeholder="password" formControlName="password"
                         class="w-full hover:border-black py-2 pl-3 rounded mt-2 outline-none focus:ring-red-600 text-black" />
                 </div>
                 <button
-                class="py-2 px-4 mt-4 block bg-red-600 hover:bg-red-500 text-white font-bold w-full text-center rounded">Login</button>
+                class="py-2 px-4 mt-4 block bg-red-600 hover:bg-red-500 disabled:bg-gray-500 text-white font-bold w-full text-center rounded" type="submit" [disabled]="!loginForm.valid">Login</button>
             </form>
         </div>
         <div class="px-10 grid grid-cols-2 gap-2">
